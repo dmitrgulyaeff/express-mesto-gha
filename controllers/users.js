@@ -24,9 +24,9 @@ const getUser = async (req, res, next) => {
   } catch (err) {
     if (err.name === 'CastError') {
       next(new BadRequestError('Неверный формат данных в запросе'));
-      return;
+    } else {
+      next(err);
     }
-    next(err);
   }
 };
 
@@ -36,12 +36,14 @@ const createUser = async (req, res, next) => {
     const user = await User.create({ name, about, avatar });
     res.status(200).send(user);
   } catch (err) {
-    if (err.name === 'ValidationError' || err.name === 'CastError') {
+    if (err.name === 'ValidationError') {
       next(
         new BadRequestError(
           'Переданы некорректные данные при создании пользователя',
         ),
       );
+    } else {
+      next(err);
     }
   }
 };
@@ -68,8 +70,9 @@ const updateProfile = async (req, res, next) => {
           'Переданы некорректные данные при обновлении профиля',
         ),
       );
+    } else {
+      next(err);
     }
-    next(err);
   }
 };
 
@@ -95,8 +98,9 @@ const updateAvatar = async (req, res, next) => {
           'Переданы некорректные данные при обновлении профиля',
         ),
       );
+    } else {
+      next(err);
     }
-    next(err);
   }
 };
 
