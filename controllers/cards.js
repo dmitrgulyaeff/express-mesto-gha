@@ -1,6 +1,7 @@
 const Cards = require('../models/card');
 const BadRequestError = require('../errors/bad-request');
 const NotFoundError = require('../errors/not-found');
+const ForbiddenError = require('../errors/forbidden');
 
 const getCards = async (req, res, next) => {
   try {
@@ -33,10 +34,17 @@ const createCard = async (req, res, next) => {
 const deleteCard = async (req, res, next) => {
   const { cardId } = req.params;
   try {
-    const card = await Cards.findByIdAndRemove(cardId);
+    const card = await Cards.findById(cardId);
     if (!card) {
       throw new NotFoundError('Карточка с указанным _id не найдена');
     }
+
+    const ownerId = card.owner.toString();
+    const userId = req.user._id;
+    if (ownerId !== userId) {
+      throw new ForbiddenError('Отказано в доступе');
+    }
+    await card.deleteOne();
     res.status(200).send(card);
   } catch (err) {
     if (err.name === 'CastError') {
