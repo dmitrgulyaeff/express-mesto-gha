@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const { urlValidator } = require('../utils/urlValidator');
 
 const userSchema = new mongoose.Schema(
   {
@@ -35,6 +36,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+      validate: { validator: urlValidator, message: 'Введите корректный URL' },
     },
   },
   { versionKey: false },
