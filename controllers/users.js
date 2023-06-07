@@ -60,6 +60,25 @@ const getUser = async (req, res, next) => {
   }
 };
 
+const getUserByIdFromAuth = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new NotFoundError('Пользователь с данным _id не найден');
+    }
+
+    res.send(user);
+  } catch (err) {
+    if (err.name === 'CastError') {
+      next(new BadRequestError('Неверный формат данных в запросе'));
+    } else {
+      next(err);
+    }
+  }
+};
+
 const createUser = async (req, res, next) => {
   const {
     email, password, name, about, avatar,
@@ -143,6 +162,7 @@ module.exports = {
   login,
   getUsers,
   getUser,
+  getUserByIdFromAuth,
   createUser,
   updateProfile,
   updateAvatar,
