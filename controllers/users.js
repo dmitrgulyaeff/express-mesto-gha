@@ -4,6 +4,7 @@ const User = require('../models/user');
 const BadRequestError = require('../errors/bad-request');
 const NotFoundError = require('../errors/not-found');
 const UnauthorizedError = require('../errors/unauthorized');
+const ConflictError = require('../errors/conflict');
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -96,6 +97,8 @@ const createUser = async (req, res, next) => {
           'Переданы некорректные данные при создании пользователя',
         ),
       );
+    } else if (err.name === 'MongoServerError' && err.code === 11000) {
+      next(new ConflictError('Пользователь с таким логином уже существует'));
     } else {
       next(err);
     }
