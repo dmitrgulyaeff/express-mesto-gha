@@ -89,7 +89,8 @@ const createUser = async (req, res, next) => {
     const user = await User.create({
       email, password: hash, name, about, avatar,
     });
-    res.status(200).send(user);
+    const { password: userPassword, ...userWithoutPassword } = user.toObject();
+    res.status(200).send({ ...userWithoutPassword });
   } catch (err) {
     if (err.name === 'ValidationError') {
       next(
