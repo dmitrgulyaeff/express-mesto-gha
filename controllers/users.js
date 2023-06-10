@@ -164,6 +164,15 @@ const updateAvatar = async (req, res, next) => {
   }
 };
 
+const logout = (req, res) => {
+  res.cookie('jwt', '', {
+    maxAge: 0,
+    httpOnly: true,
+    sameSite: 'none',
+    secure: true,
+  }).send({ message: 'Вы вышли из профиля' });
+};
+
 module.exports = {
   login,
   getUsers,
@@ -172,4 +181,5 @@ module.exports = {
   createUser,
   updateProfile,
   updateAvatar,
+  logout,
 };
