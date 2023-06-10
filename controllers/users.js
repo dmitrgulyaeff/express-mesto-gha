@@ -1,3 +1,4 @@
+const { NODE_ENV, JWT_SECRET } = process.env;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
@@ -21,7 +22,7 @@ const login = async (req, res, next) => {
 
     const token = jwt.sign(
       { _id: user._id },
-      'super-strong-secret',
+      NODE_ENV === 'production' ? JWT_SECRET : 'super-strong-secret',
       { expiresIn: '7d' },
     );
     res.cookie('jwt', token, {
