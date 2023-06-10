@@ -7,6 +7,12 @@ const auth = require('../middlewares/auth');
 const { urlValidator } = require('../utils/urlValidator');
 const NotFoundError = require('../errors/not-found');
 
+router.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
+
 router.post(
   '/signin',
   celebrate({
